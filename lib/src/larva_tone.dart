@@ -1,7 +1,7 @@
 import 'larva_art.dart';
 
 /// ## Larva Tone
-/// [LarvaArt] Theme enumerations.
+/// [Avatar] Theme enumerations.
 /// Can be passed literally in [LarvaArt.lockTo]
 /// and [LarvaArt.read]. Can either be 'A' or 'B'
 /// or 'C'.
@@ -58,9 +58,9 @@ enum LarvaTone {
   }
 
   //...Methods
-  /// Deduce [LarvaToneCurl] from [LarvaArtCurl]
+  /// Deduce [LarvaToneCurl] from [AvatarCurl]
   /// using this tone as a request card.
-  LarvaToneCurl themeOf(LarvaArtCurl curl) {
+  LarvaToneCurl themeOf(AvatarCurl curl) {
     //...
     final hash = {A: curl.a, B: curl.b, C: curl.c};
     return hash[this] ?? curl.a; // :) Loving this.

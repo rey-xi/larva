@@ -1,7 +1,7 @@
 part of larva.art;
 
 /// Sector (-01)
-const _temp = LarvaArtCurl._(
+const _temp = AvatarCurl._(
   //...
   env: '',
   head: '',

@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'larva_art.dart';
 
 /// ## Larva
-/// Create new larva SVG widget. [art] specifies the
+/// Create new larva SVG widget. [avatar] specifies the
 /// avatar art that's being rendered. [fit] defaults
 /// to [BoxFit.contain].
 /// ```dart
@@ -19,7 +19,7 @@ import 'larva_art.dart';
 /// ```
 class Larva extends StatelessWidget {
   //...Fields
-  final LarvaArt art;
+  final Avatar avatar;
   final double? width;
   final double? height;
   final BoxFit fit;
@@ -34,7 +34,7 @@ class Larva extends StatelessWidget {
 
   const Larva({
     super.key,
-    required this.art,
+    this.avatar = Avatar.robot,
     this.width,
     this.height,
     this.fit = BoxFit.contain,
@@ -53,7 +53,7 @@ class Larva extends StatelessWidget {
   Widget build(BuildContext context) {
     //...
     return SvgPicture.string(
-      art.print(),
+      avatar.print(),
       key: key,
       width: width,
       height: height,

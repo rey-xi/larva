@@ -25,63 +25,62 @@ part 'larva_art/robot.dart';
 part 'larva_art/temp.dart';
 part 'larva_art/utils.dart';
 
-/// ## Larva Art Link
-/// Larva Art Reference class. Use instance of class
-/// to reference larva art objects provided by larva
-/// art curl. Call [print] on class instances to get
-/// it's SVG equivalent.
+/// ## Avatar Link or Larva Art
+/// Larva Art class. Reference larva arts provided by
+/// [AvatarCurl] objects. Call [print] to get it's SVG
+/// equivalent.
 /// ```dart
-/// final art = LarvaArt.lockTo('Emmanuel');
+/// final art = Avatar.lockTo('Emmanuel');
 /// ```
-class LarvaArt {
+class Avatar {
   //...Enum
   /// LarvaArt [00]
-  static const robot = LarvaArt.at(00);
+  static const robot = Avatar.at(00);
 
   /// LarvaArt [01]
-  static const girl = LarvaArt.at(01);
+  static const girl = Avatar.at(01);
 
   /// LarvaArt [02]
-  static const blonde = LarvaArt.at(02);
+  static const blonde = Avatar.at(02);
 
   /// LarvaArt [03]
-  static const guy = LarvaArt.at(03);
+  static const guy = Avatar.at(03);
 
   /// LarvaArt [04]
-  static const country = LarvaArt.at(04);
+  static const country = Avatar.at(04);
 
   /// LarvaArt [05]
-  static const dude = LarvaArt.at(05);
+  static const dude = Avatar.at(05);
 
   /// LarvaArt [06]
-  static const asian = LarvaArt.at(06);
+  static const asian = Avatar.at(06);
 
   /// LarvaArt [07]
-  static const punk = LarvaArt.at(07);
+  static const punk = Avatar.at(07);
 
   /// LarvaArt [08]
-  static const afroHair = LarvaArt.at(08);
+  static const afroHair = Avatar.at(08);
 
   /// LarvaArt [09]
-  static const bitch = LarvaArt.at(09);
+  static const bitch = Avatar.at(09);
 
   /// LarvaArt [10]
-  static const older = LarvaArt.at(10);
+  static const older = Avatar.at(10);
 
   /// LarvaArt [11]
-  static const fireHair = LarvaArt.at(11);
+  static const fireHair = Avatar.at(11);
 
   /// LarvaArt [12]
-  static const blond = LarvaArt.at(12);
+  static const blond = Avatar.at(12);
 
   /// LarvaArt [13]
-  static const aTeam = LarvaArt.at(13);
+  static const aTeam = Avatar.at(13);
 
   /// LarvaArt [14]
-  static const rasta = LarvaArt.at(14);
+  static const rasta = Avatar.at(14);
 
   /// LarvaArt [15]
-  static const meta = LarvaArt.at(15);
+  static const meta = Avatar.at(15);
 
   //...Fields
   final int env;
@@ -90,39 +89,51 @@ class LarvaArt {
   final int mouth;
   final int eyes;
   final int hair;
+  final String phrase;
   final LarvaTone tone;
 
-  const LarvaArt({
-    this.tone = LarvaTone.A,
+  const Avatar._({
     this.env = -0x1,
     this.head = 0x0,
     this.cloth = 0x0,
     this.mouth = 0x0,
     this.eyes = 0x0,
     this.hair = 0x0,
+    this.phrase = '',
+    this.tone = LarvaTone.A,
   });
 
-  /// Get the complete [LarvaArt] situated at [index]
-  /// Used in defining each contemporary LarvaArt.
-  const LarvaArt.at(int index)
+  /// Get the complete [Avatar] defined at [index]. This
+  /// constructor was used in defining each contemporary
+  /// Avatar.
+  const Avatar.at(int index)
       //...
-      : tone = LarvaTone.A,
-        env = index,
-        head = index,
-        cloth = index,
-        mouth = index,
-        eyes = index,
-        hair = index;
+      : this._(
+          env: index,
+          head: index,
+          cloth: index,
+          mouth: index,
+          eyes: index,
+          hair: index,
+        );
 
-  /// Read out art from a direct literal art [slug]
-  /// Supported Slug format: `00 00 00 00 00 00 A`
-  factory LarvaArt.read(String slug) {
+  /// Read out art from a direct literal avatar [slug]
+  /// Supported Slug format: `00 00 00 00 00 00 A` .*
+  const Avatar.read(String slug) : this._(phrase: slug);
+
+  /// Create a random LarvaArt using [key]. The result
+  /// is not so random as same [key] value will always
+  /// produce the same [Avatar] object
+  const Avatar.lockOn(String key) : this._(phrase: key);
+
+  //...Methods
+  Avatar get _init {
     //...
     final code = RegExp(
       r'^\s*(-?\d+\w?) (-?\d+\w?) (-?\d+\w?) (-?\d+'
       r'\w?) (-?\d+\w?) (-?\d+\w?)( [ABCabc])?\s*$',
     );
-    final match = code.matchAsPrefix(slug);
+    final match = code.matchAsPrefix(phrase);
     final env = _abbrev(match?.group(1) ?? '-1');
     final head = _abbrev(match?.group(2) ?? '0');
     final cloth = _abbrev(match?.group(3) ?? '0');
@@ -131,7 +142,27 @@ class LarvaArt {
     final hair = _abbrev(match?.group(6) ?? '0');
     final toneStr = match?.group(7)?.trim();
     //...
-    return LarvaArt(
+    if (phrase.isEmpty) return this;
+    if ((match?.groupCount ?? 0) == 0) {
+      final code = RegExp(r'(.+?)( ?: ?([ABCabc]))?$');
+      final match = code.matchAsPrefix(phrase);
+      final lock = match?.group(1) ?? 'empty text';
+      final toneStr = match?.group(3)?.trim();
+      Digest hash = sha256.convert(utf8.encode(lock));
+      String digits = '$hash'.replaceAll(RegExp(r'\D'), '');
+      digits = digits.substring(0, 12);
+      //...
+      return Avatar._(
+        env: _abbrev('${digits[0]}${digits[1]}'),
+        head: _abbrev('${digits[2]}${digits[3]}'),
+        cloth: _abbrev('${digits[4]}${digits[5]}'),
+        mouth: _abbrev('${digits[6]}${digits[7]}'),
+        eyes: _abbrev('${digits[8]}${digits[9]}'),
+        hair: _abbrev('${digits[10]}${digits[11]}'),
+        tone: LarvaTone.literal(toneStr),
+      );
+    }
+    return Avatar._(
       env: env,
       head: head,
       cloth: cloth,
@@ -142,31 +173,6 @@ class LarvaArt {
     );
   }
 
-  /// Create a random LarvaArt using [string]. The
-  /// result is not so random as same [string] value
-  /// will always produce the same [LarvaArt] object
-  /// even in different operations.
-  factory LarvaArt.lockTo(String string) {
-    //...
-    final code = RegExp(r'(.+?) ?: ?([ABCabc])$');
-    final match = code.matchAsPrefix(string);
-    final lock = match?.group(1) ?? 'empty text';
-    Digest hash = sha256.convert(utf8.encode(lock));
-    String digits = '$hash'.replaceAll(RegExp(r'\D'), '');
-    digits = digits.substring(0, 12);
-    //...
-    return LarvaArt(
-      env: _abbrev('${digits[0]}${digits[1]}'),
-      head: _abbrev('${digits[2]}${digits[3]}'),
-      cloth: _abbrev('${digits[4]}${digits[5]}'),
-      mouth: _abbrev('${digits[6]}${digits[7]}'),
-      eyes: _abbrev('${digits[8]}${digits[9]}'),
-      hair: _abbrev('${digits[10]}${digits[11]}'),
-      tone: LarvaTone.literal(match?.group(2)),
-    );
-  }
-
-  //...Methods
   static int _abs(value) {
     //...
     if (value is String) {
@@ -195,17 +201,17 @@ class LarvaArt {
     return value;
   }
 
-  LarvaArt copyWith({
-    LarvaTone? tone,
+  Avatar copyWith({
     int? env,
     int? head,
     int? cloth,
     int? mouth,
     int? eyes,
     int? hair,
+    LarvaTone? tone,
   }) {
     //...
-    return LarvaArt(
+    return Avatar._(
       tone: tone ?? this.tone,
       env: env ?? this.env,
       head: head ?? this.head,
@@ -218,20 +224,21 @@ class LarvaArt {
 
   String print() {
     //...
-    final env = _abs(this.env).clamp(-1, 15);
-    final head = _abs(this.head).clamp(-1, 15);
-    final cloth = _abs(this.cloth).clamp(-1, 15);
-    final mouth = _abs(this.mouth).clamp(-1, 15);
-    final eyes = _abs(this.eyes).clamp(-1, 15);
-    final hair = _abs(this.hair).clamp(-1, 15);
+    final init = _init;
+    final env = _abs(init.env).clamp(-1, 15);
+    final head = _abs(init.head).clamp(-1, 15);
+    final cloth = _abs(init.cloth).clamp(-1, 15);
+    final mouth = _abs(init.mouth).clamp(-1, 15);
+    final eyes = _abs(init.eyes).clamp(-1, 15);
+    final hair = _abs(init.hair).clamp(-1, 15);
     //...
-    final curl = LarvaArtCurl._(
-      env: (_ht[env] ?? _temp).printEnv(LarvaTone.from(this.env)),
-      head: (_ht[head] ?? _robot).printHead(LarvaTone.from(this.head)),
-      cloth: (_ht[cloth] ?? _robot).printCloth(LarvaTone.from(this.cloth)),
-      mouth: (_ht[mouth] ?? _robot).printMouth(LarvaTone.from(this.mouth)),
-      eyes: (_ht[eyes] ?? _robot).printEyes(LarvaTone.from(this.eyes)),
-      hair: (_ht[hair] ?? _robot).printHair(LarvaTone.from(this.hair)),
+    final curl = AvatarCurl._(
+      env: (_ht[env] ?? _temp).printEnv(LarvaTone.from(init.env)),
+      head: (_ht[head] ?? _robot).printHead(LarvaTone.from(init.head)),
+      cloth: (_ht[cloth] ?? _robot).printCloth(LarvaTone.from(init.cloth)),
+      mouth: (_ht[mouth] ?? _robot).printMouth(LarvaTone.from(init.mouth)),
+      eyes: (_ht[eyes] ?? _robot).printEyes(LarvaTone.from(init.eyes)),
+      hair: (_ht[hair] ?? _robot).printHair(LarvaTone.from(init.hair)),
       a: LarvaToneCurl(
         env: (_ht[env] ?? _robot).a.env,
         cloth: (_ht[cloth] ?? _robot).a.cloth,
@@ -261,18 +268,18 @@ class LarvaArt {
   }
 }
 
-/// ## Larva Art Curl
-/// [LarvaArt] Configuration URL. Used to encode
-/// it's data to ensure attribute mixing. Soft*
-/// Passively less important;
-class LarvaArtCurl {
+/// ## Avatar Curl or Larva Art Curl
+/// [Avatar] configuration. Used to encode it's data
+/// to ensure attribute mixing. Soft* Passively used!
+/// Deemed to be less important;
+class AvatarCurl {
   //...Fields
   final LarvaToneCurl a, b, c;
   final String env, cloth;
   final String head, mouth;
   final String eyes, hair;
 
-  const LarvaArtCurl._({
+  const AvatarCurl._({
     this.env = _env,
     this.head = _head,
     required this.cloth,

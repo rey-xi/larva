@@ -1,7 +1,7 @@
 part of larva.art;
 
 /// Sector (01)
-const _girl = LarvaArtCurl._(
+const _girl = AvatarCurl._(
   //...
   cloth: '<path d="m141.75 195a114.79 114.79 0 0 1 38 16'
       '.5 115.53 115.53 0 0 1-128.46 0 114.79 114.79 0 0 1 38-16.5c0'

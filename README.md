@@ -59,7 +59,7 @@ avatar + its A theme. You can also read it like this `00A 00A 00A 00A 00A 00A`.
 `47 47 47 47 47 47` - this is the 12,230,590,464th avatar (or the 16th 
 initial avatar + its "C" color theme).
 
-More info can be found in the `random_avatar.dart` file comments.
+More info can be found in the `larva.dart` file comments.
 
 
 ### Screenshots ###
